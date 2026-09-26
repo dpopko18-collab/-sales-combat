@@ -1,0 +1,1536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sales Combat</title>
+
+<style>
+:root{
+  --bg:#070b14;
+  --card:#111827;
+  --card2:#182235;
+  --border:#293750;
+  --text:#f4f7ff;
+  --muted:#9aa8c2;
+  --blue:#3b82f6;
+  --green:#22c55e;
+  --yellow:#f59e0b;
+  --red:#ef4444;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+
+button,input,select,textarea{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+}
+
+.app{
+  max-width:900px;
+  margin:auto;
+  padding:18px;
+}
+
+header{
+  padding:10px 0 20px;
+}
+
+.logo{
+  font-size:30px;
+  font-weight:900;
+}
+
+.tagline{
+  color:var(--muted);
+  margin-top:4px;
+}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:20px;
+  margin-bottom:15px;
+  box-shadow:0 10px 30px rgba(0,0,0,.15);
+}
+
+h1,h2,h3{
+  margin-top:0;
+}
+
+button{
+  width:100%;
+  border:1px solid var(--border);
+  background:#0d1525;
+  color:white;
+  border-radius:13px;
+  padding:14px;
+  margin-top:10px;
+  font-weight:800;
+}
+
+button.primary{
+  background:var(--blue);
+  border-color:var(--blue);
+}
+
+button.danger{
+  background:#35131a;
+  border-color:#6b202b;
+}
+
+button:hover{
+  filter:brightness(1.12);
+}
+
+select,textarea{
+  width:100%;
+  background:#0c1424;
+  color:white;
+  border:1px solid var(--border);
+  border-radius:13px;
+  padding:13px;
+  margin-top:7px;
+}
+
+textarea{
+  min-height:135px;
+  resize:vertical;
+}
+
+label{
+  display:block;
+  color:var(--muted);
+  margin-top:14px;
+  font-size:14px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+}
+
+.stat{
+  background:var(--card2);
+  border:1px solid var(--border);
+  border-radius:15px;
+  padding:15px;
+}
+
+.stat-number{
+  font-size:27px;
+  font-weight:900;
+}
+
+.stat-label{
+  color:var(--muted);
+  font-size:13px;
+}
+
+.badge{
+  display:inline-block;
+  background:#243250;
+  color:#cbd8f4;
+  border-radius:999px;
+  padding:6px 10px;
+  margin:2px;
+  font-size:12px;
+}
+
+.prospect{
+  background:#0d1525;
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:18px;
+  font-size:19px;
+  line-height:1.55;
+  margin-top:14px;
+}
+
+.coach{
+  border-left:4px solid var(--blue);
+  padding-left:14px;
+  line-height:1.6;
+}
+
+.score{
+  font-size:56px;
+  font-weight:900;
+}
+
+.muted{
+  color:var(--muted);
+}
+
+.hidden{
+  display:none!important;
+}
+
+.progress{
+  height:8px;
+  background:#263249;
+  border-radius:20px;
+  overflow:hidden;
+  margin-top:7px;
+}
+
+.progress-bar{
+  height:100%;
+  background:var(--blue);
+}
+
+.metric{
+  margin:15px 0;
+}
+
+.metric-head{
+  display:flex;
+  justify-content:space-between;
+}
+
+.menu{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+}
+
+.small{
+  font-size:13px;
+  color:var(--muted);
+}
+
+hr{
+  border:0;
+  border-top:1px solid var(--border);
+  margin:20px 0;
+}
+
+@media(max-width:600px){
+  .grid,.menu{
+    grid-template-columns:1fr;
+  }
+
+  .app{
+    padding:12px;
+  }
+
+  .card{
+    padding:16px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<header>
+  <div class="logo">⚔️ SALES COMBAT</div>
+  <div class="tagline">Train until pressure feels normal.</div>
+</header>
+
+<!-- HOME -->
+
+<section id="home">
+
+<div class="card">
+
+<h2>Command Center</h2>
+
+<div class="grid">
+
+<div class="stat">
+<div id="sessions" class="stat-number">0</div>
+<div class="stat-label">Sessions</div>
+</div>
+
+<div class="stat">
+<div id="avgScore" class="stat-number">0</div>
+<div class="stat-label">Average Score</div>
+</div>
+
+<div class="stat">
+<div id="xp" class="stat-number">0</div>
+<div class="stat-label">XP</div>
+</div>
+
+<div class="stat">
+<div id="level" class="stat-number">Rookie</div>
+<div class="stat-label">Level</div>
+</div>
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h2>Choose Your Fight</h2>
+
+<label>Industry</label>
+
+<select id="industry">
+<option>Roofing</option>
+<option>HVAC</option>
+<option>Solar</option>
+<option>Insurance</option>
+<option>Real Estate</option>
+<option>Landscaping</option>
+<option>Remodeling</option>
+<option>Plumbing</option>
+<option>Digital Marketing</option>
+<option>Auto Sales</option>
+</select>
+
+
+<label>Difficulty</label>
+
+<select id="difficulty">
+<option>Beginner</option>
+<option>Intermediate</option>
+<option>Hard</option>
+<option>Brutal</option>
+</select>
+
+
+<label>Prospect Personality</label>
+
+<select id="personality">
+<option>Skeptical</option>
+<option>Rushed</option>
+<option>Cheap</option>
+<option>Analytical</option>
+<option>Interested</option>
+<option>Angry</option>
+<option>Friendly</option>
+</select>
+
+
+<button class="primary" onclick="startRoleplay()">
+⚔️ START ROLE-PLAY
+</button>
+
+</div>
+
+
+<div class="card">
+
+<h2>Training Labs</h2>
+
+<div class="menu">
+
+<button onclick="startDrill('discovery')">
+🔎 Discovery Lab
+</button>
+
+<button onclick="startDrill('objection')">
+🥊 Objection Lab
+</button>
+
+<button onclick="startDrill('closing')">
+🎯 Closing Lab
+</button>
+
+<button onclick="startDrill('speed')">
+⚡ Speed Drill
+</button>
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h2>Today's Mission</h2>
+
+<p>
+Ask better questions. Talk less. Discover the real problem.
+</p>
+
+<button class="primary" onclick="startDaily()">
+🔥 START DAILY MISSION
+</button>
+
+</div>
+
+</section>
+
+
+<!-- GAME -->
+
+<section id="game" class="hidden">
+
+<div class="card">
+
+<div id="gameBadges"></div>
+
+<h2 id="gameTitle">Prospect</h2>
+
+<div id="prospectMessage" class="prospect"></div>
+
+</div>
+
+
+<div class="card">
+
+<h3>Your Response</h3>
+
+<textarea
+id="response"
+placeholder="Type exactly what you would say..."
+></textarea>
+
+<button class="primary" onclick="submitResponse()">
+SEND RESPONSE
+</button>
+
+<button onclick="endSession()">
+END SESSION
+</button>
+
+</div>
+
+
+<div id="feedback" class="card hidden"></div>
+
+</section>
+
+
+<!-- RESULTS -->
+
+<section id="results" class="hidden"></section>
+
+</div>
+
+
+<script>
+
+/* =========================
+   SCENARIO DATABASE
+========================= */
+
+const discovery = {
+
+Roofing:[
+"How are you currently getting most of your roofing customers?",
+"How consistent is that from month to month?",
+"What have you tried to improve the slow months?",
+"What happened when you tried that?",
+"How are those slow months affecting the company?"
+],
+
+HVAC:[
+"Where are most of your HVAC customers coming from?",
+"How predictable is that source?",
+"What happens during your slower months?",
+"What have you tried to improve it?",
+"What would consistent qualified calls mean for you?"
+],
+
+Solar:[
+"Where are most of your solar appointments coming from?",
+"How predictable is that pipeline?",
+"What have you tried to generate more appointments?",
+"What happened with those attempts?",
+"What would a full calendar of qualified appointments change?"
+],
+
+Insurance:[
+"How are you currently generating new policyholders?",
+"Where do you see the biggest gap?",
+"What have you tried to improve it?",
+"What happened with those attempts?",
+"What would a predictable pipeline mean?"
+],
+
+"Real Estate":[
+"Where are most of your buyers and sellers coming from?",
+"How consistent are those opportunities?",
+"What have you tried to generate more business?",
+"What happened?",
+"What would predictable clients mean for you?"
+],
+
+Landscaping:[
+"Where are most of your landscaping customers coming from?",
+"How consistent is that?",
+"What have you tried to increase leads?",
+"What happened?",
+"What would ten additional qualified jobs mean?"
+],
+
+Remodeling:[
+"How are you currently getting remodeling customers?",
+"Are you getting enough qualified projects?",
+"What have you tried?",
+"What happened?",
+"What would consistent projects mean?"
+],
+
+Plumbing:[
+"Where are most of your plumbing customers coming from?",
+"How consistent is that?",
+"What happens during slower weeks?",
+"What have you tried?",
+"What would more qualified calls mean?"
+],
+
+"Digital Marketing":[
+"How are you currently getting clients?",
+"How predictable is your lead flow?",
+"What marketing have you tried?",
+"What happened?",
+"What would five additional qualified clients mean?"
+],
+
+"Auto Sales":[
+"Where are most of your customers coming from?",
+"How consistent is your showroom traffic?",
+"What have you tried to improve it?",
+"What happened?",
+"What would another ten qualified buyers mean?"
+]
+
+};
+
+
+const objections = {
+
+Skeptical:[
+"I've heard this before. What makes you different?",
+"Why should I trust you?",
+"How do I know this will actually work?",
+"That sounds like a lot of promises.",
+"I'm not interested in taking a risk."
+],
+
+Rushed:[
+"I've got about thirty seconds. What do you want?",
+"Get to the point.",
+"Okay, but how much does it cost?",
+"I don't have time for this.",
+"Just send me something."
+],
+
+Cheap:[
+"Can't I just do this myself?",
+"That's too expensive.",
+"My nephew can make videos.",
+"I'm not paying someone for that.",
+"Why would I give you a percentage?"
+],
+
+Analytical:[
+"How exactly would you measure this?",
+"How would attribution work?",
+"What are your assumptions?",
+"What happens if the numbers don't improve?",
+"Define success before asking me to commit."
+],
+
+Interested:[
+"That sounds interesting. Tell me more.",
+"How would you approach it?",
+"What would you need from me?",
+"How would we measure success?",
+"What would the next step look like?"
+],
+
+Angry:[
+"We already wasted money on marketing.",
+"I don't want another salesperson wasting my time.",
+"Why should I listen to you?",
+"Your industry makes a lot of promises.",
+"What exactly are you going to do?"
+],
+
+Friendly:[
+"That sounds interesting. Tell me more.",
+"How would this work?",
+"What would you need from me?",
+"How would we get started?",
+"What would the first month look like?"
+]
+
+};
+
+
+const closingScenarios=[
+
+"Okay, I'm interested. What would you recommend we do next?",
+
+"I like the idea, but I'm still hesitant to move forward.",
+
+"Everything sounds good. What's the next step?",
+
+"Assuming the numbers make sense, I'd be willing to start.",
+
+"Why should I make a decision today?"
+
+];
+
+
+const speedScenarios=[
+
+"Respond to: 'It's too expensive.'",
+
+"Respond to: 'Send me an email.'",
+
+"Respond to: 'I'm not interested.'",
+
+"Ask one question that uncovers pain.",
+
+"Give your value proposition in one sentence.",
+
+"Respond to: 'I already have someone.'"
+
+];
+
+
+/* =========================
+   STATE
+========================= */
+
+let state={
+
+mode:"roleplay",
+
+industry:"Roofing",
+
+difficulty:"Beginner",
+
+personality:"Skeptical",
+
+turn:0,
+
+responses:[],
+
+scores:{
+
+Discovery:0,
+
+Questioning:0,
+
+Listening:0,
+
+Clarity:0,
+
+Confidence:0,
+
+ObjectionHandling:0,
+
+Closing:0
+
+}
+
+};
+
+
+/* =========================
+   STORAGE
+========================= */
+
+function getStats(){
+
+return JSON.parse(
+localStorage.getItem("salesCombatStats")
+||
+JSON.stringify({
+
+sessions:0,
+
+totalScore:0,
+
+xp:0,
+
+history:[]
+
+})
+);
+
+}
+
+
+function saveStats(stats){
+
+localStorage.setItem(
+"salesCombatStats",
+JSON.stringify(stats)
+);
+
+}
+
+
+function updateDashboard(){
+
+const stats=getStats();
+
+document.getElementById("sessions")
+.textContent=stats.sessions;
+
+document.getElementById("avgScore")
+.textContent=
+stats.sessions
+?
+Math.round(stats.totalScore/stats.sessions)
+:
+0;
+
+document.getElementById("xp")
+.textContent=stats.xp;
+
+let level="Rookie";
+
+if(stats.xp>=100) level="Apprentice";
+
+if(stats.xp>=250) level="Prospect Hunter";
+
+if(stats.xp>=500) level="Closer";
+
+if(stats.xp>=1000) level="Deal Maker";
+
+if(stats.xp>=2000) level="Elite";
+
+document.getElementById("level")
+.textContent=level;
+
+}
+
+
+/* =========================
+   START ROLEPLAY
+========================= */
+
+function startRoleplay(){
+
+state.mode="roleplay";
+
+state.industry=
+document.getElementById("industry").value;
+
+state.difficulty=
+document.getElementById("difficulty").value;
+
+state.personality=
+document.getElementById("personality").value;
+
+state.turn=0;
+
+resetScores();
+
+showGame();
+
+}
+
+
+/* =========================
+   TRAINING LABS
+========================= */
+
+function startDrill(type){
+
+state.mode=type;
+
+state.turn=0;
+
+state.industry=
+document.getElementById("industry").value;
+
+state.difficulty=
+document.getElementById("difficulty").value;
+
+state.personality=
+document.getElementById("personality").value;
+
+resetScores();
+
+showGame();
+
+}
+
+
+function startDaily(){
+
+state.mode="daily";
+
+state.turn=0;
+
+state.industry=
+document.getElementById("industry").value;
+
+state.difficulty="Hard";
+
+state.personality="Skeptical";
+
+resetScores();
+
+showGame();
+
+}
+
+
+function resetScores(){
+
+state.responses=[];
+
+Object.keys(state.scores)
+.forEach(
+key=>state.scores[key]=0
+);
+
+}
+
+
+/* =========================
+   GAME DISPLAY
+========================= */
+
+function showGame(){
+
+document.getElementById("home")
+.classList.add("hidden");
+
+document.getElementById("results")
+.classList.add("hidden");
+
+document.getElementById("game")
+.classList.remove("hidden");
+
+showPrompt();
+
+}
+
+
+function showPrompt(){
+
+const badge=document.getElementById("gameBadges");
+
+badge.innerHTML=`
+
+<span class="badge">${state.industry}</span>
+
+<span class="badge">${state.difficulty}</span>
+
+<span class="badge">${state.personality}</span>
+
+<span class="badge">
+Turn ${state.turn+1}
+</span>
+
+`;
+
+
+let prompt="";
+
+
+if(state.mode==="roleplay"){
+
+if(state.turn<5){
+
+prompt=
+discovery[state.industry][state.turn];
+
+}else{
+
+const list=
+objections[state.personality];
+
+prompt=
+list[
+Math.min(
+state.turn-5,
+list.length-1
+)
+];
+
+}
+
+}
+
+
+if(state.mode==="discovery"){
+
+prompt=
+discovery[state.industry][
+state.turn %
+discovery[state.industry].length
+];
+
+}
+
+
+if(state.mode==="objection"){
+
+prompt=
+objections[state.personality][
+state.turn %
+objections[state.personality].length
+];
+
+}
+
+
+if(state.mode==="closing"){
+
+prompt=
+closingScenarios[
+state.turn %
+closingScenarios.length
+];
+
+}
+
+
+if(state.mode==="speed"){
+
+prompt=
+speedScenarios[
+state.turn %
+speedScenarios.length
+];
+
+}
+
+
+if(state.mode==="daily"){
+
+const daily=[
+
+"Discovery: Find out how the prospect currently gets customers.",
+
+"Objection: Handle 'I need to think about it.'",
+
+"Speed: Ask one question that uncovers pain.",
+
+"Role-play: The prospect says their marketing has been inconsistent.",
+
+"Close: Ask for the next step without being pushy."
+
+];
+
+prompt=daily[
+state.turn % daily.length
+];
+
+}
+
+
+document.getElementById("gameTitle")
+.textContent=
+state.mode==="speed"
+?
+"⚡ Speed Drill"
+:
+"Prospect";
+
+
+document.getElementById("prospectMessage")
+.textContent=prompt;
+
+document.getElementById("response").value="";
+
+document.getElementById("feedback")
+.classList.add("hidden");
+
+document.getElementById("response").focus();
+
+}
+
+
+/* =========================
+   RESPONSE EVALUATION
+========================= */
+
+function evaluate(text){
+
+const words=
+text.split(/\s+/)
+.filter(Boolean)
+.length;
+
+const questions=
+(text.match(/\?/g)||[]).length;
+
+let score=0;
+
+let notes=[];
+
+
+/* Discovery */
+
+if(
+/how|what|why|where|tell me|currently|tried|goal|affect|impact/i
+.test(text)
+){
+
+state.scores.Discovery+=25;
+
+score+=25;
+
+}else{
+
+state.scores.Discovery+=8;
+
+score+=8;
+
+}
+
+
+/* Questioning */
+
+if(questions){
+
+const points=
+Math.min(
+30,
+10+(questions*10)
+);
+
+state.scores.Questioning+=points;
+
+score+=points;
+
+}else{
+
+state.scores.Questioning+=5;
+
+notes.push(
+"Ask a question. Don't rush to pitch."
+);
+
+}
+
+
+/* Listening */
+
+if(
+/you said|you mentioned|based on what you told me|earlier|from what you said/i
+.test(text)
+){
+
+state.scores.Listening+=30;
+
+score+=30;
+
+}else{
+
+state.scores.Listening+=12;
+
+}
+
+
+/* Clarity */
+
+if(words<=35){
+
+state.scores.Clarity+=30;
+
+score+=30;
+
+}else if(words<=60){
+
+state.scores.Clarity+=22;
+
+score+=22;
+
+}else{
+
+state.scores.Clarity+=8;
+
+score+=8;
+
+notes.push(
+"Your response was long. Try saying the same thing in half the words."
+);
+
+}
+
+
+/* Confidence */
+
+if(
+/I can|we can|I would|we could|let's|here's|based on/i
+.test(text)
+){
+
+state.scores.Confidence+=25;
+
+score+=25;
+
+}else{
+
+state.scores.Confidence+=14;
+
+score+=14;
+
+}
+
+
+/* Objection handling */
+
+if(
+/fair|understand|makes sense|good question|that's a fair|I hear you/i
+.test(text)
+){
+
+state.scores.ObjectionHandling+=28;
+
+score+=28;
+
+}else{
+
+state.scores.ObjectionHandling+=10;
+
+score+=10;
+
+}
+
+
+/* Closing */
+
+if(
+/would you|next step|start|book|schedule|move forward|ready/i
+.test(text)
+){
+
+state.scores.Closing+=30;
+
+score+=30;
+
+}
+
+
+/* Premature pitch */
+
+if(
+state.turn<3 &&
+/I can help|my service|what I do|we offer|I will get you/i
+.test(text)
+){
+
+notes.push(
+"You're pitching early. Find the problem before presenting the solution."
+);
+
+state.scores.Discovery-=8;
+
+}
+
+
+/* Unsupported guarantees */
+
+if(
+/guarantee|guaranteed|definitely will|100%/i
+.test(text)
+){
+
+notes.push(
+"Avoid guarantees you cannot prove. Sell the process and measurable outcome."
+);
+
+}
+
+
+/* Too many words */
+
+if(words>80){
+
+notes.push(
+"You rambled. Strong salespeople can communicate the same idea much more efficiently."
+);
+
+}
+
+
+if(notes.length===0){
+
+notes.push(
+"Good control. Build your next response from the prospect's exact words."
+);
+
+}
+
+
+return{
+
+score,
+
+words,
+
+notes
+
+};
+
+}
+
+
+/* =========================
+   SUBMIT
+========================= */
+
+function submitResponse(){
+
+const box=
+document.getElementById("response");
+
+const text=box.value.trim();
+
+if(!text)return;
+
+const result=evaluate(text);
+
+state.responses.push({
+
+text,
+
+score:result.score
+
+});
+
+document.getElementById("feedback")
+.classList.remove("hidden");
+
+document.getElementById("feedback")
+.innerHTML=`
+
+<h3>⚡ Instant Coaching</h3>
+
+<div class="coach">
+
+${result.notes
+.map(n=>"• "+n)
+.join("<br><br>")}
+
+</div>
+
+<p class="small">
+Response length: ${result.words} words
+</p>
+
+<div class="row">
+
+<button onclick="retry()">
+🔄 Retry
+</button>
+
+<button
+class="primary"
+onclick="nextTurn()"
+>
+Continue →
+</button>
+
+</div>
+
+`;
+
+}
+
+
+function retry(){
+
+document.getElementById("feedback")
+.classList.add("hidden");
+
+document.getElementById("response")
+.focus();
+
+}
+
+
+/* =========================
+   NEXT TURN
+========================= */
+
+function nextTurn(){
+
+state.turn++;
+
+let maxTurns=10;
+
+if(state.mode==="speed")
+maxTurns=6;
+
+if(state.mode==="closing")
+maxTurns=5;
+
+if(state.mode==="discovery")
+maxTurns=5;
+
+if(state.mode==="objection")
+maxTurns=5;
+
+if(state.mode==="daily")
+maxTurns=5;
+
+if(state.turn>=maxTurns){
+
+finish();
+
+}else{
+
+showPrompt();
+
+}
+
+}
+
+
+/* =========================
+   FINISH
+========================= */
+
+function finish(){
+
+document.getElementById("game")
+.classList.add("hidden");
+
+document.getElementById("results")
+.classList.remove("hidden");
+
+
+const values=
+Object.values(state.scores);
+
+const average=
+values.reduce(
+(a,b)=>a+b,
+0
+)/values.length;
+
+
+const finalScore=
+Math.max(
+0,
+Math.min(
+100,
+Math.round(average*3.33)
+)
+);
+
+
+const stats=getStats();
+
+stats.sessions++;
+
+stats.totalScore+=finalScore;
+
+stats.xp+=
+Math.max(
+10,
+Math.round(finalScore/2)
+);
+
+
+stats.history.push({
+
+date:new Date().toISOString(),
+
+score:finalScore,
+
+industry:state.industry,
+
+difficulty:state.difficulty,
+
+personality:state.personality
+
+});
+
+
+if(stats.history.length>50){
+
+stats.history.shift();
+
+}
+
+
+saveStats(stats);
+
+showResults(finalScore);
+
+updateDashboard();
+
+}
+
+
+/* =========================
+   RESULTS
+========================= */
+
+function showResults(finalScore){
+
+const sorted=
+Object.entries(state.scores)
+.sort(
+(a,b)=>b[1]-a[1]
+);
+
+
+const strongest=
+sorted[0][0];
+
+const weakest=
+sorted[sorted.length-1][0];
+
+
+let html=`
+
+<div class="card">
+
+<h2>🏁 Mission Complete</h2>
+
+<div class="score">
+${finalScore}/100
+</div>
+
+<p class="muted">
+${state.industry} • ${state.difficulty}
+</p>
+
+</div>
+
+
+<div class="card">
+
+<h2>Performance Breakdown</h2>
+
+`;
+
+
+Object.entries(state.scores)
+.forEach(([name,value])=>{
+
+const score=
+Math.max(
+0,
+Math.min(
+30,
+Math.round(value/state.responses.length)
+)
+);
+
+html+=`
+
+<div class="metric">
+
+<div class="metric-head">
+
+<span>${name}</span>
+
+<b>${score}/30</b>
+
+</div>
+
+<div class="progress">
+
+<div
+class="progress-bar"
+style="width:${score/30*100}%"
+></div>
+
+</div>
+
+</div>
+
+`;
+
+});
+
+
+html+=`
+
+</div>
+
+
+<div class="card">
+
+<h2>🔥 What To Train</h2>
+
+<p>
+Strongest skill:
+<b>${strongest}</b>
+</p>
+
+<p>
+Biggest training opportunity:
+<b>${weakest}</b>
+</p>
+
+<p class="muted">
+Don't try to fix everything at once.
+Take your weakest skill into the next drill.
+</p>
+
+<button
+class="primary"
+onclick="returnHome()"
+>
+RETURN TO COMMAND CENTER
+</button>
+
+<button onclick="startRoleplay()">
+⚔️ RUN IT AGAIN
+</button>
+
+</div>
+
+`;
+
+document.getElementById("results")
+.innerHTML=html;
+
+}
+
+
+function endSession(){
+
+if(confirm("End this session? Your current session will not be scored.")){
+
+returnHome();
+
+}
+
+}
+
+
+function returnHome(){
+
+document.getElementById("game")
+.classList.add("hidden");
+
+document.getElementById("results")
+.classList.add("hidden");
+
+document.getElementById("home")
+.classList.remove("hidden");
+
+updateDashboard();
+
+}
+
+
+/* =========================
+   INITIALIZE
+========================= */
+
+updateDashboard();
+
+</script>
+
+</body>
+</html>
